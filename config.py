@@ -9,10 +9,10 @@ class Config(object):
     SECRET_KEY = 'demo-2016'
     WTF_CSRF_ENABLED = True
     WTF_CSRF_SECRET_KEY = 'demo-2016'
-    LOG_FILENAME = '/var/www/demo_boilerplate/logs/solar.log'
+    LOG_FILENAME = '/var/www/demo_boilerplate/logs/demo.log'
     STATIC_FOLDER = '/var/www/demo_boilerplate/client/static'
     TEMPLATES_FOLDER = '/var/www/demo_boilerplate/client/templates'
-    TMP_DIR = '/var/www/solar/tmp'
+    TMP_DIR = '/var/www/demo_boilerplate/tmp'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
