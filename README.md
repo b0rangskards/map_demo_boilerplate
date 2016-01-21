@@ -21,3 +21,6 @@ Note: it is using port 82
    * gulp build and gulp watch
 7) bin/local/run-app.sh
 
+# Set it to your Git Repo
+git remote add origin https://github.com/user/repo.git
+
