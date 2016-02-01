@@ -23,7 +23,7 @@ gulp.task('watch', function(event) {
     gulp.watch([
         paths.srcJs + '/app/*.js',
         paths.srcJs + '/app/**/*.js'
-    ], function(event) {
+    ], function (event) {
         runSequence('app-scripts', function () {
             browserSync.reload(event.path);
         });
@@ -35,5 +35,5 @@ gulp.task('watch', function(event) {
             runSequence('sass', function () {
                 browserSync.reload(event.path);
             });
-    });
+        });
 });

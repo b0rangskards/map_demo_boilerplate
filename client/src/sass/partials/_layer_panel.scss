@@ -11,7 +11,7 @@
   z-index: 3;
 
   button {
-    margin: 6px 0px;
+    margin: 3px 0px;
     min-width: 45px;
 
     md-icon {
@@ -26,29 +26,55 @@ md-backdrop.md-sidenav-backdrop {
 }
 
 md-sidenav.map-panel {
-  height: 390px;
-  top: 45px;
-  width: 250px;
+  min-height: 200px;
+  max-height: 320px;
+  top: 10%;
+  width: 210px;
   z-index: 2;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 
   md-toolbar {
-    min-height: 45px;
-    max-height: 45px;
+    width: inherit !important;
+    min-height: 40px;
+    max-height: 40px;
+
+    .md-toolbar-tools {
+      height: inherit !important;
+      max-height: inherit !important;
+      padding: 0 10px;
+    }
   }
 
   md-content {
-    padding-left: 40px !important;
+    padding: 10px 0px 10px 45px !important;
+//    height: 250px;
+//    max-height: 300px;
 
-    md-checkbox {
-//      margin: 5px !important;
-//      padding-left: 15px !important;
-//      line-height: 23px !important;
-        margin-right: 10px;
-      min-width: 10px !important;
-      min-height: 10px !important;
+    md-input-container {
+      padding: 0px 5px;
+      margin: 0px 20px;
     }
+
+    md-list-item {
+      height: 35px;
+      min-height: 35px;
+
+      md-checkbox {
+        margin-right: 15px !important;
+      }
+    }
+  }
+}
+
+$searchPanelHeight: 180px;
+md-sidenav#search-panel {
+  height: $searchPanelHeight;
+  min-height: $searchPanelHeight;
+  top: 21%;
+
+  md-content {
+    height: $searchPanelHeight - 60px;
   }
 }
 

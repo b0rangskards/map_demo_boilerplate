@@ -24,5 +24,3 @@ source venv/bin/activate
 
 # install all requirements to virtual env
 pip install -r requirements.txt
-
-

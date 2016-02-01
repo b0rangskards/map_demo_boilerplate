@@ -2,19 +2,16 @@
     'use strict';
 
     angular
-        .module('demoApp', ['ngMaterial', 'ngAnimate', 'restangular', 'oitozero.ngSweetAlert', 'treasure-overlay-spinner'])
+        .module('demoApp', ['ngMaterial', 'ngAnimate', 'oitozero.ngSweetAlert', 'treasure-overlay-spinner'])
 
-        .config(['RestangularProvider', function (RestangularProvider) {
-            //set the base url for api calls on our RESTful services
-            var baseUrl = window.location.origin + '/api';
-            RestangularProvider.setBaseUrl(baseUrl);
-        }]);
+        .constant('BASE_URL', window.location.origin)
+        .constant('LAYER_LIMIT', 5)
 
-    //.config(function ($mdThemingProvider) {
-    //    $mdThemingProvider.theme('default')
-    //        .primaryPalette('red')
-    //        .accentPalette('pink');
-    //});
+        .config(function ($mdThemingProvider) {
+            $mdThemingProvider.theme('default')
+                .primaryPalette('red')
+                .accentPalette('pink');
+        });
 
     console.log('demo app initialized!');
 

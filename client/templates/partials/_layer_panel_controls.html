@@ -1,5 +1,5 @@
 {% raw %}
-<section id="layer-toggle-btn-container">
+<section id="layer-toggle-btn-container" layout="column">
 
     <md-button class="md-hue-2" ng-click="indexCtl.toggleSearchPanel()">
         <md-tooltip md-direction="right">
@@ -7,14 +7,6 @@
         </md-tooltip>
         <md-icon>search</md-icon>
     </md-button>
-    <br/>
-    <md-button class="md-hue-2" ng-click="indexCtl.toggleFilterPanel()">
-        <md-tooltip md-direction="right">
-            Filters
-        </md-tooltip>
-        <md-icon>filter_list</md-icon>
-    </md-button>
-    <br/>
     <md-button id="layer-toggle-btn" ng-click="indexCtl.toggleLayerPanel()">
         <md-tooltip md-direction="right">
             Show Layers

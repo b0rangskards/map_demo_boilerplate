@@ -2,34 +2,24 @@
     'use strict';
 
     angular.module('demoApp')
-        .factory('gmapServices', ['$log', '$q', gmapServices]);
+        .factory('gmapServices', ['$log', '$q', 'BASE_URL', gmapServices]);
 
-    function gmapServices($log, $q) {
+    function gmapServices($log, $q, BASE_URL) {
         var service = {};
-
-        var MapTypeId = {
-            USGSTopo: "USGS Topo"
-        };
-
-        service.MARKER_ICONS = {
-            // IN-PROCESS
-            RED: '/resources/images/red-dot.png',
-            // SUBMITTED
-            YELLOW: '/resources/images/yellow-dot.png',
-            // APPROVED
-            GREEN: '/resources/images/green-dot.png',
-            // INVALID
-            ERROR: '/resources/images/caution.png'
-        };
 
         //infowindow balloons
         service.INFO_WINDOWS = [];
 
-        service.ZOOM_OUT_LEVEL = 6;
+        service.ZOOM_OUT_LEVEL = 8;
         service.ZOOM_IN_LEVEL = 17;
 
         service.map = null;
+        service.mapProjection = null;
         service.overlayView = null;
+
+        //service.webGlView = null;
+        //service.tileController = null;
+        //service.isWebGLAvailable = false;
 
         service.geocoder = null;
 
@@ -37,7 +27,11 @@
 
         service.defaultZoom = service.ZOOM_OUT_LEVEL;
 
-        service.defaultLatLng = new google.maps.LatLng(32.7577, -88.4376);
+        service.defaultLatLng = new google.maps.LatLng(41.878114, -87.629798);
+
+        // Cluster Objects
+        // for Different Layers
+        service.markerClusterers = {};
 
         // Maintain only one infobox
         // Prevent from opening multiple infoboxes
@@ -80,6 +74,7 @@
         service.hideMarker = hideMarker;
         service.hideMarkers = hideMarkers;
         service.destroyMarker = destroyMarker;
+        service.destroyPolyline = destroyPolyline;
         service.centerMarker = centerMarker;
         service.setMapCenter = setMapCenter;
         service.setMapCenterDefault = setMapCenterDefault;
@@ -103,6 +98,7 @@
         service.fillPolygon = fillPolygon;
         service.panToPolygon = panToPolygon;
         service.createPolyline = createPolyline;
+        service.createDashedPolyline = createDashedPolyline;
         service.updatePolyline = updatePolyline;
         service.showPolyline = showPolyline;
         service.hidePolyline = hidePolyline;
@@ -114,9 +110,23 @@
         service.trigger = trigger;
         service.showCurrentLocation = showCurrentLocation;
         service.reverseGeocode = reverseGeocode;
-        service.WMSGetTopoUrl = WMSGetTopoUrl;
-        service.createWMSTopoMapType = createWMSTopoMapType;
+        service.loadKMLByURL = loadKMLByURL;
+        service.initMapClusterer = initMapClusterer;
+        service.destroyMapClusterer = destroyMapClusterer;
+        service.createClusterMarker = createClusterMarker;
+        service.getClustererInstance = getClustererInstance;
+        service.clearClusterMarkers = clearClusterMarkers;
+        service.resetClusters = resetClusters;
+        service.insertImageMapType = insertImageMapType;
+        service.removeOverlayAtIndex = removeOverlayAtIndex;
+        service.initializeAutocomplete = initializeAutocomplete;
+        service.containsLocation = containsLocation;
+        service.triggerEvent = triggerEvent;
 
+
+        //service.isWebGLAvailable = isWebGLAvailable;
+        //service.addPoint = addPoint;
+        //service.removePoint = removePoint;
 
         function apiAvailable() {
             return typeof window.google === 'object';
@@ -133,10 +143,9 @@
                 zoom: service.defaultZoom,
                 minZoom: 2,
                 center: service.defaultLatLng,
-                mapTypeId: google.maps.MapTypeId.HYBRID,
+                mapTypeId: google.maps.MapTypeId.MAP,
                 mapTypeControlOptions: {
-                    position: google.maps.ControlPosition.LEFT_TOP,
-                    mapTypeIds: [google.maps.MapTypeId.HYBRID, google.maps.MapTypeId.SATELLITE, MapTypeId.USGSTopo]
+                    position: google.maps.ControlPosition.RIGHT_TOP
                 },
                 zoomControlOptions: {
                     position: google.maps.ControlPosition.RIGHT_BOTTOM
@@ -148,8 +157,24 @@
 
             service.map = new google.maps.Map(document.getElementById(mapIdLoc), mapOptions);
 
+            // Init WebGLView for smooth rendering
+            //service.webGlView = new WebGLView(service.map).init();
+            //service.tileController = new TileController(service.webGlView);
+            //
+            //google.maps.event.addListenerOnce(service.map, "projection_changed", function () {
+            //    service.mapProjection = service.map.getProjection();
+            //
+            //    console.log('projection changed!');
+            //
+            //    service.webGlView.addEventListener('added_to_dom', function () {
+            //        service.isWebGLAvailable = true;
+            //    });
+            //
+            //    service.webGlView.setMap(service.map);
+            //});
+
             // initialize geocoder
-            service.geocoder = new google.maps.Geocoder();
+            //service.geocoder = new google.maps.Geocoder();
 
             // handle window resize event
             google.maps.event.addDomListener(window, 'resize', function () {
@@ -158,15 +183,6 @@
                 google.maps.event.trigger(service.map, 'resize');
                 service.map.setCenter(center);
             });
-
-            var overlayView = new google.maps.OverlayView();
-            overlayView.draw = function () {
-            };
-            overlayView.setMap(service.map);
-            service.overlayView = overlayView;
-
-            // Initialize USGS TOPO Map Layer
-            service.createWMSTopoMapType();
 
             return service.map;
         }
@@ -327,7 +343,7 @@
 
         function createCustomMarker(_position, _icon, _opts) {
             var opts = _opts || {},
-                icon = _icon || 'images/markers/default-solar-marker.png';
+                icon = _icon || 'images/markers/default-marker.png';
 
             return service.initMarker(_position, icon, opts);
         }
@@ -390,15 +406,26 @@
             });
         }
 
+        function destroyPolyline(polyline) {
+            if (polyline && polyline instanceof google.maps.Polyline) polyline.setMap(null);
+            service.clearInstanceListeners(polyline);
+            polyline = null;
+        }
+
         function destroyMarker(marker) {
-            service.hideMarker(marker);
+            if (marker instanceof Cluster) {
+                marker.remove();
+            }
+            else if (marker instanceof google.maps.Marker) {
+                service.hideMarker(marker);
+                service.clearInstanceListeners(marker);
+            }
             marker = null;
         }
 
         function centerMarker(marker) {
             if (service.map) {
                 service.map.setCenter(marker.position);
-                //service.map.setZoom(service.defaultZoom);
             }
         }
 
@@ -656,17 +683,44 @@
             service.panTo(bounds.getCenter());
         }
 
-        function createPolyline(path) {
+        function createPolyline(path, lineColor) {
             if (!service.apiAvailable()) return null;
             var polylineOptions = {
                 path: path,
-                clickable: false,
+                clickable: true,
                 draggable: false,
                 editable: false,
                 map: service.map,
-                strokeColor: '#ff0000',
+                strokeColor: lineColor || '#ff0000',
                 strokeOpacity: 1,
-                strokeWeight: 5,
+                strokeWeight: 2,
+                zIndex: 100
+            };
+            return new google.maps.Polyline(polylineOptions);
+        }
+
+        function createDashedPolyline(path, lineColor) {
+            if (!service.apiAvailable()) return null;
+
+            var lineSymbol = {
+                path: 'M 0,-1 0,1',
+                strokeOpacity: 1,
+                scale: 1
+            };
+
+            var polylineOptions = {
+                path: path,
+                clickable: true,
+                draggable: false,
+                editable: false,
+                map: service.map,
+                strokeColor: lineColor || '#ff0000',
+                icons: [{
+                    icon: lineSymbol,
+                    offset: '0',
+                    repeat: '3px'
+                }],
+                strokeOpacity: 0,
                 zIndex: 100
             };
             return new google.maps.Polyline(polylineOptions);
@@ -739,53 +793,174 @@
             return dfd.promise;
         }
 
-        /**
-         * Start of TOPOGRAPHY Map Code
-         */
+        function loadKMLByURL(srcUrl, kmlOptions) {
+            if (service.map) {
+                var opt = {
+                    url: srcUrl,
+                    map: service.map,
+                    preserveViewport: true
+                };
 
-        /*The code that reads in the WMS file.  To change the WMS layer the user would update the layers line.  As this is constructed now you need to have this code for each WMS layer.
-         Check with your Web Map Server to see what are the required components of the address.  You may need to add a couple of segements.  For example, the ArcServer WMS requires
-         a CRS value which is tacked on to the end of the url.  For an example visit http://www.gisdoctor.com/v3/arcserver_wms.html
-         */
+                if (kmlOptions) {
+                    opt = angular.extend({}, opt, kmlOptions);
+                }
 
-         function WMSGetTopoUrl(tile, zoom) {
-            var projection = service.map.getProjection();
-            var zpow = Math.pow(2, zoom);
-            var ul = new google.maps.Point(tile.x * 256.0 / zpow, (tile.y + 1) * 256.0 / zpow);
-            var lr = new google.maps.Point((tile.x + 1) * 256.0 / zpow, (tile.y) * 256.0 / zpow);
-            var ulw = projection.fromPointToLatLng(ul);
-            var lrw = projection.fromPointToLatLng(lr);
-            //The user will enter the address to the public WMS layer here.  The data must be in WGS84
-            var baseURL = "http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer?&REQUEST=GetMap&SERVICE=WMS&VERSION=1.3&LAYERS="; //begining of the WMS URL ending with a "?" or a "&".
-            var format = "image%2Fjpeg"; //type of image returned  or image/jpeg
-            //The layer ID.  Can be found when using the layers properties tool in ArcMap
-            var layers = "0";
-            var srs = "EPSG:4326"; //projection to display. This is the projection of google map. Don't change unless you know what you are doing.
-            var bbox = ulw.lat() + "," + ulw.lng() + "," + lrw.lat() + "," + lrw.lng();
-            //Add the components of the URL together
-            var url = baseURL + layers + "&Styles=default" + "&SRS=" + srs + "&BBOX=" + bbox + "&width=256" + "&height=256" + "&format=" + format + "&BGCOLOR=0xFFFFFF&TRANSPARENT=true" + "&reaspect=false" + "&CRS=EPSG:4326";
-            return url;
+                return new google.maps.KmlLayer(opt);
+            }
+            return null;
         }
 
-        function createWMSTopoMapType() {
-            if (!service.apiAvailable()) return null;
-            // Creating the WMS layer options.  This code creates the Google imagemaptype options for each wms layer.
-            // In the options the function that calls the individual wms layer is set.
-            var wmsOptions = {
-                alt: MapTypeId.USGSTopo,
-                getTileUrl: service.WMSGetTopoUrl,
-                isPng: false,
-                maxZoom: 16,
-                minZoom: 1,
-                name: MapTypeId.USGSTopo,
-                tileSize: new google.maps.Size(256, 256),
-                credit: 'USGS'
+        function loadClusterStyles(layerName) {
+            var defaultStyle = 'resources/images/cluster_icons/m';
+
+            if(layerName == 'meters') {
+                return defaultStyle;
+            } else if(layerName == 'transformers') {
+                return 'resources/images/cluster_icons/transformers/m';
+            } else if(layerName == 'poles') {
+                return 'resources/images/cluster_icons/poles/m';
+            }
+            return defaultStyle;
+        }
+
+        function initMapClusterer(layerName) {
+            if (!service.markerClusterers[layerName]) {
+                var clusterStyle = loadClusterStyles(layerName);
+
+                service.markerClusterers[layerName] = new MarkerClusterer(service.map, [],
+                    {imagePath: clusterStyle});
+
+                return service.markerClusterers[layerName];
+            }
+            return null;
+        }
+
+        function destroyMapClusterer(layerName) {
+            if (service.markerClusterers[layerName]) {
+                service.markerClusterers[layerName] = null;
+            }
+        }
+
+        function createClusterMarker(_position, clusterCount, layerName) {
+            if (!service.apiAvailable() || !service.markerClusterers[layerName]) return null;
+
+            var latLngObj = new google.maps.LatLng(_position.lat, _position.lng)
+            var cluster = new Cluster(service.markerClusterers[layerName]);
+
+            cluster.center_ = latLngObj;
+
+            cluster.clusterIcon_.setCenter(latLngObj);
+            cluster.clusterIcon_.setSums({text: clusterCount, index: Math.round(Math.log(clusterCount) / Math.LN10)});
+            cluster.clusterIcon_.textColor_ = 'white';
+            cluster.clusterIcon_.show();
+            cluster.clusterIcon_.triggerClusterClick = function () {
+                var currentZoom = service.map.getZoom();
+                service.map.setZoom(++currentZoom);
+                service.map.setCenter(cluster.center_);
             };
 
-            // init the USGS Topo map type
-            var wmsMapType = new google.maps.ImageMapType(wmsOptions);
-            service.map.mapTypes.set(MapTypeId.USGSTopo, wmsMapType);
+            return cluster;
         }
+
+        function getClustererInstance(layerName) {
+            return service.markerClusterers[layerName];
+        }
+
+        function clearClusterMarkers(clusterArray) {
+            clusterArray.forEach(function (item, index) {
+                if (item instanceof Cluster) {
+                    item.remove();
+                }
+                clusterArray[index] = null;
+            });
+        }
+
+        function resetClusters(layerName) {
+            if (service.markerClusterers[layerName]) {
+                service.markerClusterers[layerName].clusters_ = [];
+            }
+        }
+
+        function insertImageMapType(srcUrl, insertIndex) {
+            if (!service.apiAvailable()) return;
+
+            var _insertIndex = insertIndex || 0;
+
+            var imageTile = new google.maps.ImageMapType({
+                getTileUrl: function (coord, zoom) {
+                    var z2 = Math.pow(2, zoom);
+                    var y = coord.y,
+                        x = coord.x >= 0 ? coord.x : z2 + coord.x
+
+                    return srcUrl + '/' + zoom + "/" + x + "/" + y + ".png";
+                },
+                tileSize: new google.maps.Size(256, 256),
+                isPng: true,
+                opacity: 1.0
+            });
+
+            service.map.overlayMapTypes.insertAt(_insertIndex, imageTile);
+
+            return _insertIndex;
+        }
+
+        function removeOverlayAtIndex(index) {
+            service.map.overlayMapTypes.setAt(index, null);
+        }
+
+        function initializeAutocomplete(elementId) {
+            var input = document.getElementById(elementId);
+            var autocomplete = new google.maps.places.Autocomplete(input, {
+                types: ["geocode"]
+            });
+
+            autocomplete.bindTo('bounds', service.map);
+
+            return autocomplete;
+        }
+
+        function containsLocation (latLng, polygon) {
+            if(!polygon) return;
+
+            return google.maps.geometry.poly.containsLocation(latLng, polygon);
+        }
+
+        function triggerEvent (obj, event) {
+            google.maps.event.trigger(obj, 'click');
+        }
+
+        //function addPoint (coordinates, _iconUrl) {
+        //    if (!service.isWebGLAvailable) return;
+        //
+        //    var iconUrl = _iconUrl || BASE_URL + '/images/markers/default-marker.png';
+        //
+        //    //console.log('coordinates: ', coordinates);
+        //    //console.log('Point icon url: '+iconUrl);
+        //
+        //    var pointOptions = {};
+        //
+        //    var image = $("<img />").attr('src', iconUrl).on('load', function () {
+        //        var latLng = new google.maps.LatLng(coordinates.lat, coordinates.lng)
+        //        var point = service.mapProjection.fromLatLngToPoint(latLng);
+        //
+        //        console.log('Point: ', point);
+        //
+        //        pointOptions.position = {x: point.x, y: point.y, z: 0};
+        //        pointOptions.color = {r: 1, g: 1, b: 1};
+        //        pointOptions.imageName = iconUrl;
+        //        pointOptions.image = image[0];
+        //        pointOptions.point = service.webGlView.addPoint(pointOptions);
+        //
+        //        service.webGlView.draw();
+        //    });
+        //    return pointOptions;
+        //}
+        //
+        //function removePoint (point) {
+        //    if(!service.isWebGLAvailable) return;
+        //
+        //    service.webGlView.removePoint(point);
+        //}
 
         return service;
     }

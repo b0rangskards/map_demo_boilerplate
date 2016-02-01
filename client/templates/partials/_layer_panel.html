@@ -1,59 +1,30 @@
 {% raw %}
 <!-- SEARCH PANEL SIDENAV -->
 <md-sidenav class="md-sidenav-left md-whiteframe-z2 map-panel"
-    md-component-id="searchPanel">
+    md-component-id="searchPanel"
+    id="search-panel">
   <md-toolbar class="md-primary">
       <div class="md-toolbar-tools">
           <h3>
-              <md-icon>search</md-icon>
-              Search Map
+              <md-icon style="margin-right: 10px;">search</md-icon>Search
           </h3>
           <span flex></span>
-          <md-button class="md-icon-button" ng-click="indexCtl.closeSideNav('searchPanel')"> <!---  ng-controller="LeftCtrl" -->
+          <md-button class="md-icon-button" ng-click="indexCtl.closeSideNav('searchPanel')">
             <md-icon>close</md-icon>
           </md-button>
       </div>
   </md-toolbar>
 
-  <md-content layout-padding ng-controller="mapLayerPanelController as layerPanelCtl" style="padding:0px;">
-    <!--<md-list style="padding:0px;">
-        <md-list-item ng-repeat="layer in layerPanelCtl.layers" style="padding:0px;font-size:13px;">
-          <md-checkbox ng-model="layer.selected" class="md-warn"></md-checkbox>{{ layer.label }}
-        </md-list-item>
-    </md-list>-->
-    <p>search here</p>
+  <md-content layout-padding style="padding:0px;" ng-controller="filterController as filterCtl">
+    <div layout="column" layout-align="center center" style="height:inherit;padding: 0px;">
+        <md-input-container style="margin: 0 10px;">
+          <!--<label>Enter a location</label>-->
+          <input id="filter-location-input">
+        </md-input-container>
+    </div>
   </md-content>
 
 </md-sidenav>
-
-
-<!-- FILTER PANEL SIDENAV -->
-<md-sidenav class="md-sidenav-left md-whiteframe-z2 map-panel"
-    md-component-id="filterPanel">
-  <md-toolbar class="md-primary">
-      <div class="md-toolbar-tools">
-          <h3>
-              <md-icon>filter_list</md-icon>
-              Filter
-          </h3>
-          <span flex></span>
-          <md-button class="md-icon-button" ng-click="indexCtl.closeSideNav('filterPanel')"> <!---  ng-controller="LeftCtrl" -->
-            <md-icon>close</md-icon>
-          </md-button>
-      </div>
-  </md-toolbar>
-
-  <md-content layout-padding ng-controller="mapLayerPanelController as layerPanelCtl" style="padding:0px;">
-    <!--<md-list style="padding:0px;">
-        <md-list-item ng-repeat="layer in layerPanelCtl.layers" style="padding:0px;font-size:13px;">
-          <md-checkbox ng-model="layer.selected" class="md-warn"></md-checkbox>{{ layer.label }}
-        </md-list-item>
-    </md-list>-->
-    <p>filter here</p>
-  </md-content>
-
-</md-sidenav>
-
 
 
 <!-- LAYERS PANEL SIDENAV -->
@@ -63,19 +34,18 @@
   <md-toolbar class="md-primary">
       <div class="md-toolbar-tools">
           <h3>
-              <md-icon>layers</md-icon>
-              Layers
+              <md-icon style="margin-right: 10px;">layers</md-icon>Layers
           </h3>
           <span flex></span>
-          <md-button class="md-icon-button" ng-click="indexCtl.closeSideNav('layerPanel')"> <!---  ng-controller="LeftCtrl" -->
+          <md-button class="md-icon-button" ng-click="indexCtl.closeSideNav('layerPanel')">
             <md-icon>close</md-icon>
           </md-button>
       </div>
   </md-toolbar>
 
-  <md-content layout-padding ng-controller="mapLayerPanelController as layerPanelCtl" style="padding:0px;">
+  <md-content layout-padding ng-controller="layerController as layerCtl" style="padding:0px;">
     <md-list style="padding:0px;">
-        <md-list-item ng-repeat="layer in layerPanelCtl.layers" style="padding:0px;font-size:13px;">
+        <md-list-item ng-repeat="layer in layerCtl.layers" style="padding:0px;font-size:13px;">
           <md-checkbox ng-model="layer.selected" class="md-warn"></md-checkbox>{{ layer.label }}
         </md-list-item>
     </md-list>

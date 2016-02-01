@@ -48,6 +48,16 @@ class PolygonToLatLng(fields.Raw):
         return [dict(lat=point[1], lng=point[0]) for point in polygon.exterior.coords]
 
 
+class LinestringToLatLng(fields.Raw):
+    """
+    Convert PostGIS Linestring Geometry to [{lat=pt.y,lng=pt.x}]
+    """
+
+    def format(self, value):
+        linestring = to_shape(value)
+        return [dict(lat=point[1], lng=point[0]) for point in linestring.coords]
+
+
 # jling
 class DecimalToDMS(fields.Raw):
     """

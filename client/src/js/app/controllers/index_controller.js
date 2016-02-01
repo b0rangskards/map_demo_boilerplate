@@ -15,7 +15,6 @@ angular.module('demoApp')
         vm.initialize = initialize;
         vm.toggleLayerPanel = buildToggler('layerPanel');
         vm.toggleSearchPanel = buildToggler('searchPanel');
-        vm.toggleFilterPanel = buildToggler('filterPanel');
         vm.closeSideNav = closeSideNav;
 
         vm.lastSideNavOpenId = '';
@@ -28,24 +27,18 @@ angular.module('demoApp')
 
         function buildToggler(navID) {
             return function () {
-                if (vm.lastSideNavOpenId && $mdSidenav(vm.lastSideNavOpenId).isOpen()) {
+                if (vm.lastSideNavOpenId && vm.lastSideNavOpenId !== navID) {
                     closeSideNav(vm.lastSideNavOpenId);
-                    if(vm.lastSideNavOpenId == navID) return;
                 }
 
-                $mdSidenav(navID)
-                    .toggle()
-                    .then(function () {
-                        vm.lastSideNavOpenId = navID;
-                    });
+                $mdSidenav(navID).toggle();
+
+                vm.lastSideNavOpenId = navID;
             }
         }
 
         function closeSideNav(navID) {
-            $mdSidenav(navID).close()
-                .then(function () {
-                    console.log(navID + " layer panel is closed.");
-                });
+            $mdSidenav(navID).close();
         }
     }
 }());

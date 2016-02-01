@@ -9,8 +9,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 from config import config_by_name
 
-# Specify Environment via "export SOLAR_ENV=<environment_name>"
-env = os.getenv('SOLAR_ENV') or 'dev'
+# Specify Environment via "export DEMO_ENV=<environment_name>"
+env = os.getenv('DEMO_ENV') or 'dev'
 
 app = Flask(__name__)
 app.config.from_object(config_by_name[env])

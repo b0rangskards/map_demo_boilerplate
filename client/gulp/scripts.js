@@ -17,9 +17,7 @@ gulp.task('vendor-scripts', function () {
         paths.bower + '/angular-material/angular-material.js',
         paths.bower + '/sweetalert/dist/sweetalert.min.js',
         paths.bower + '/ngSweetAlert/SweetAlert.min.js',
-        paths.bower + '/restangular/dist/restangular.min.js',
         paths.bower + '/angular-treasure-overlay-spinner/dist/treasure-overlay-spinner.min.js'
-        //paths.srcLibJs + '/infobox.js'
     ])
         .pipe($.concat('vendor.min.js'))
         .pipe($.uglify({mangle: false}).on('error', $.util.log))
@@ -38,7 +36,7 @@ gulp.task('jq-scripts', function () {
 });
 
 gulp.task('app-scripts', ['jq-scripts'], function () {
-    return gulp.src( ['!'+paths.srcJs + '/app_jq.js', paths.srcJs + '/app/*.js', paths.srcJs + '/app/**/*.js'])
+    return gulp.src(['!' + paths.srcJs + '/app_jq.js', paths.srcJs + '/app/*.js', paths.srcJs + '/app/**/*.js'])
         .pipe($.eslint())
         .pipe($.eslint.format())
         .pipe($.ngAnnotate())
