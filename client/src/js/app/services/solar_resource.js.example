@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-angular.module('solarApp')
+angular.module('demoApp')
     .factory('Solars', ['Restangular', 'Upload', Solars]);
     
     function Solars (Restangular, Upload) {

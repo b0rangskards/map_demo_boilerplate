@@ -69,7 +69,7 @@
         'Approved'
     ];
 
-    angular.module('solarApp')
+    angular.module('demoApp')
         .value('usStates', usStates)
         .value('solarStatuses', solarStatuses);
 

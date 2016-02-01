@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-angular.module('solarApp')
+angular.module('demoApp')
     .factory('modalServices', ['$rootScope', '$q', '$mdDialog', '$mdMedia', 'Solars', modalServices]);
 
     function modalServices($rootScope, $q, $mdDialog, $mdMedia, Solars) {
