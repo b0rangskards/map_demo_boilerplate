@@ -1,6 +1,6 @@
 #layer-toggle-btn-container {
   position: absolute;
-  top: 30%;
+  top: 40%;
   left: 0;
   height: auto;
   background-color: white;
@@ -28,11 +28,12 @@ md-backdrop.md-sidenav-backdrop {
 md-sidenav.map-panel {
   min-height: 200px;
   max-height: 320px;
-  top: 10%;
+  top: 20%;
   width: 210px;
   z-index: 2;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+  overflow-x: hidden;
 
   md-toolbar {
     width: inherit !important;
@@ -47,9 +48,7 @@ md-sidenav.map-panel {
   }
 
   md-content {
-    padding: 10px 0px 10px 45px !important;
-//    height: 250px;
-//    max-height: 300px;
+    padding: 15px 0px 10px 45px !important;
 
     md-input-container {
       padding: 0px 5px;
@@ -71,10 +70,49 @@ $searchPanelHeight: 180px;
 md-sidenav#search-panel {
   height: $searchPanelHeight;
   min-height: $searchPanelHeight;
-  top: 21%;
+  top: 30%;
 
   md-content {
     height: $searchPanelHeight - 60px;
   }
 }
 
+md-sidenav#layer-panel {
+  top: 25%;
+  width: 235px;
+  min-height: 270px;
+  height: 270px;
+  max-height: 390px;
+
+  v-accordion {
+    padding-right: 0px !important;
+
+    v-pane {
+      padding-right: 10px;
+      v-pane-header {
+        margin-bottom: 5px;
+        button.md-button {
+          padding: 0px;
+          margin: 0px;
+          height: 30px;
+          min-height: 30px;
+          width: 30px;
+          text-align: left;
+        }
+        md-checkbox {
+          margin-bottom: 5px;
+        }
+        div:first-child {
+          font-size: 14px;
+        }
+      }
+      .md-list-item-inner {
+        padding: 0px;
+      }
+
+      v-pane-content > div {
+        padding-bottom: 5px;
+      }
+    }
+  }
+}

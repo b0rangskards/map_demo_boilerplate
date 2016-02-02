@@ -43,13 +43,34 @@
       </div>
   </md-toolbar>
 
-  <md-content layout-padding ng-controller="layerController as layerCtl" style="padding:0px;">
-    <md-list style="padding:0px;">
-        <md-list-item ng-repeat="layer in layerCtl.layers" style="padding:0px;font-size:13px;">
-          <md-checkbox ng-model="layer.selected" class="md-warn"></md-checkbox>{{ layer.label }}
-        </md-list-item>
-    </md-list>
-  </md-content>
 
+    <md-content layout-padding ng-controller="layerController as layerCtl" style="padding:0px;">
+      <v-accordion class="vAccordion--default" multiple>
+        <!-- add expanded attribute to open the section -->
+        <v-pane ng-repeat="layer in layerCtl.layers">
+          <v-pane-header inactive>
+
+            <!-- Show toggle icon if has children -->
+            <md-button class="md-icon-button" ng-if="layer.children" ng-click="$pane.toggle()">
+                <md-icon>expand_more</md-icon>
+            </md-button>
+            <!-- OR -->
+            <!-- Show Checkbox if layer has no children -->
+            <md-checkbox class="md-warn" ng-if="!layer.children" ng-model="layer.selected" ng-change="{{layer.action}}"></md-checkbox>
+            {{ layer.label }}
+          </v-pane-header>
+
+          <v-pane-content>
+            <md-list style="padding:0px;"  ng-if="layer.children">
+                <md-list-item ng-repeat="childLayer in layer.children" style="padding:0px;font-size:13px;">
+                  <md-checkbox class="md-warn" ng-model="childLayer.selected" ng-change="{{childLayer.action}}"></md-checkbox>{{ childLayer.label }}
+                </md-list-item>
+            </md-list>
+          </v-pane-content>
+        </v-pane>
+
+      </v-accordion>
+
+    </md-content>
 </md-sidenav>
 {% endraw %}

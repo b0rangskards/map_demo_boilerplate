@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('demoApp', ['ngMaterial', 'ngAnimate', 'oitozero.ngSweetAlert', 'treasure-overlay-spinner'])
+        .module('demoApp', ['ngMaterial', 'ngAnimate', 'oitozero.ngSweetAlert', 'treasure-overlay-spinner', 'vAccordion'])
 
         .constant('BASE_URL', window.location.origin)
         .constant('LAYER_LIMIT', 5)
