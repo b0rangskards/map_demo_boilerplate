@@ -52,7 +52,7 @@
 
             <!-- Show toggle icon if has children -->
             <md-button class="md-icon-button" ng-if="layer.children" ng-click="$pane.toggle()">
-                <md-icon>expand_more</md-icon>
+                <md-icon>{{ $pane.isExpanded() ? 'expand_less' : 'expand_more' }}</md-icon>
             </md-button>
             <!-- OR -->
             <!-- Show Checkbox if layer has no children -->

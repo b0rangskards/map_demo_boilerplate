@@ -1,6 +1,6 @@
 #layer-toggle-btn-container {
   position: absolute;
-  top: 40%;
+  top: calc(50% - 100px);
   left: 0;
   height: auto;
   background-color: white;
@@ -48,7 +48,7 @@ md-sidenav.map-panel {
   }
 
   md-content {
-    padding: 15px 0px 10px 45px !important;
+    padding: 5px 0px 5px 45px !important;
 
     md-input-container {
       padding: 0px 5px;
@@ -63,6 +63,45 @@ md-sidenav.map-panel {
         margin-right: 15px !important;
       }
     }
+
+    v-accordion {
+      padding-right: 0px !important;
+
+      v-pane {
+        padding-right: 10px;
+
+        v-pane-header {
+          font-size: 14px;
+          padding: 0px;
+          margin-bottom: 5px;
+
+          button.md-button {
+            padding: 0px;
+            margin: 0px;
+            height: 30px;
+            min-height: 30px;
+            width: 30px;
+            text-align: left;
+          }
+
+          md-checkbox {
+            margin-bottom: 5px;
+          }
+
+          div:first-child {
+            font-size: 14px;
+          }
+        }
+        .md-list-item-inner {
+          padding: 0px;
+        }
+
+        v-pane-content > div {
+          padding-bottom: 5px;
+        }
+      }
+    }
+
   }
 }
 
@@ -70,7 +109,7 @@ $searchPanelHeight: 180px;
 md-sidenav#search-panel {
   height: $searchPanelHeight;
   min-height: $searchPanelHeight;
-  top: 30%;
+  top: calc(50% - 160px);
 
   md-content {
     height: $searchPanelHeight - 60px;
@@ -78,41 +117,8 @@ md-sidenav#search-panel {
 }
 
 md-sidenav#layer-panel {
-  top: 25%;
+  top: calc(50% - 180px);
   width: 235px;
-  min-height: 270px;
-  height: 270px;
-  max-height: 390px;
-
-  v-accordion {
-    padding-right: 0px !important;
-
-    v-pane {
-      padding-right: 10px;
-      v-pane-header {
-        margin-bottom: 5px;
-        button.md-button {
-          padding: 0px;
-          margin: 0px;
-          height: 30px;
-          min-height: 30px;
-          width: 30px;
-          text-align: left;
-        }
-        md-checkbox {
-          margin-bottom: 5px;
-        }
-        div:first-child {
-          font-size: 14px;
-        }
-      }
-      .md-list-item-inner {
-        padding: 0px;
-      }
-
-      v-pane-content > div {
-        padding-bottom: 5px;
-      }
-    }
-  }
+  max-height: 210px;
+  overflow-x: hidden;
 }
