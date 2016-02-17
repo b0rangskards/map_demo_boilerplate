@@ -14,3 +14,7 @@
 2016-02-03 19:07:19,560 INFO - run.py <module>: Starting app
 2016-02-03 20:43:05,988 INFO - __init__.py <module>: Will output log to /var/www/demo_boilerplate/logs/app.log
 2016-02-03 20:43:06,142 INFO - run.py <module>: Starting app
+2016-02-11 20:29:03,916 INFO - __init__.py <module>: Will output log to /var/www/demo_boilerplate/logs/app.log
+2016-02-11 20:29:04,491 INFO - run.py <module>: Starting app
+2016-02-17 14:47:28,056 INFO - __init__.py <module>: Will output log to /var/www/demo_boilerplate/logs/app.log
+2016-02-17 14:47:28,279 INFO - run.py <module>: Starting app
