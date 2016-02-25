@@ -18,3 +18,5 @@
 2016-02-11 20:29:04,491 INFO - run.py <module>: Starting app
 2016-02-17 14:47:28,056 INFO - __init__.py <module>: Will output log to /var/www/demo_boilerplate/logs/app.log
 2016-02-17 14:47:28,279 INFO - run.py <module>: Starting app
+2016-02-25 17:00:35,475 INFO - __init__.py <module>: Will output log to /var/www/gis_boilerplate/logs/app.log
+2016-02-25 17:00:35,683 INFO - run.py <module>: Starting app

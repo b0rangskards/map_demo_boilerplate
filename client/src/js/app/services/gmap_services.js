@@ -2,9 +2,9 @@
     'use strict';
 
     angular.module('demoApp')
-        .factory('gmapServices', ['$log', '$q', 'BASE_URL', gmapServices]);
+        .factory('gmapServices', ['$log', '$q', 'NAV_HEIGHT', gmapServices]);
 
-    function gmapServices($log, $q, BASE_URL) {
+    function gmapServices($log, $q, NAV_HEIGHT) {
         var service = {};
 
         //infowindow balloons
@@ -16,10 +16,6 @@
         service.map = null;
         service.mapProjection = null;
         service.overlayView = null;
-
-        //service.webGlView = null;
-        //service.tileController = null;
-        //service.isWebGLAvailable = false;
 
         service.geocoder = null;
 
@@ -153,7 +149,7 @@
                 panControl: false
             };
 
-            $(myMapId).height($(window).height() - (42));
+            $(myMapId).height($(window).height() - (NAV_HEIGHT));
 
             service.map = new google.maps.Map(document.getElementById(mapIdLoc), mapOptions);
 
@@ -178,7 +174,7 @@
 
             // handle window resize event
             google.maps.event.addDomListener(window, 'resize', function () {
-                $(myMapId).height($(window).height() - (42));
+                $(myMapId).height($(window).height() - (NAV_HEIGHT));
                 var center = service.map.getCenter();
                 google.maps.event.trigger(service.map, 'resize');
                 service.map.setCenter(center);

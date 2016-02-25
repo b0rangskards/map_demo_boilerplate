@@ -6,10 +6,10 @@
 #hostname:port:database:username:password
 #e.g. localhost:5432:*:postgres:mypassword
 
-echo "CREATE USER demouser WITH PASSWORD 'youcantguess';" | psql -h localhost -U postgres
+echo "CREATE USER gisuser WITH PASSWORD 'youcantguess';" | psql -h localhost -U postgres
 
-echo "CREATE DATABASE demo;" | psql -h localhost -U postgres
+echo "CREATE DATABASE gis_demo;" | psql -h localhost -U postgres
 
-echo "CREATE EXTENSION postgis;" | psql -h localhost -U postgres -d demo
+echo "CREATE EXTENSION postgis;" | psql -h localhost -U postgres -d gis_demo
 
-echo "GRANT ALL PRIVILEGES ON DATABASE demo TO demouser;" | psql -h localhost -U postgres
+echo "GRANT ALL PRIVILEGES ON DATABASE gis_demo TO gisuser;" | psql -h localhost -U postgres
